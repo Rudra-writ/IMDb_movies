@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie List</title>
+    <style>
+    
+      th {
+        height: 50px;
+        border-bottom: 1px solid #ddd;
+        
+      }
+      td {
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+      tr:hover {background-color: rgb(147, 147, 208);}
+    </style>
+    
+   
+  
+</head>
+<body>
+  <center>
+    <div style="overflow-x:auto;"></div>
+    <table>
+        <thead >
+        <tr>
+            <th style = "position:sticky; top: 0; background:#eee; ">IMDB Title</th>
+            <th style = "position:sticky; top: 0; background:#eee; ">Original Title</th>
+            <th style = "position:sticky; top: 0; background:#eee; ">Date of Release</th>
+            <th style = "position:sticky; top: 0; background:#eee; ">Genre</th>
+            <th style = "position:sticky; top: 0; background:#eee; ">Duration</th>
+            <th style = "position:sticky; top: 0; background:#eee; ">Language</th>
+            <th style = "position:sticky; top: 0; background:#eee; ">Description</th>
+        </tr>
+        </thead>
+        {% for movie in movies %}
+        <tbody> 
+        <tr>
+            <td>{{ movie.imdb_title_id }}</td>
+            <td>{{ movie.original_title }}</td>
+            <td>{{ movie.date_published }}</td>
+            <td>{{ movie.genre }}</td>
+            <td>{{ movie.duration }}</td>
+            <td>{{ movie.language }}</td>
+            <td>{{ movie.description }}</td>  
+        </tr>
+        </tbody> 
+
+        {% endfor %}
+    </table>
+    </div>
+    </center>
+</body>
+</html>
