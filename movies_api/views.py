@@ -15,9 +15,8 @@ class MovieViewSet(viewsets.ViewSet):
         lang = None if not request.query_params.get('lang', '') else request.query_params.get('lang', '')
         check_empty = False if len(Movies.objects.values_list()) > 0 else True
 
-
+        #if no data exists in the data base, reads the csv file into a data frame, serializes it, saves the data into the database, returns the template response
         if check_empty:
-
             data = pd.read_csv('imdb/static/IMDb_movies.csv')  
             movies = data.to_dict('records')
             serializer = MovieSerializer(data=movies, many=True)
@@ -25,7 +24,8 @@ class MovieViewSet(viewsets.ViewSet):
                 serializer.save()
                 rendered_template = TemplateResponse(request, 'index.html', {'movies': serializer.data})
                 return rendered_template
-
+               
+        # if a query parameter is passed the following block gets triggered
         elif genre != None or lang != None:
             if genre != None:
                 movies = Movies.objects.filter(genre__icontains=genre.lower().capitalize())
@@ -34,7 +34,7 @@ class MovieViewSet(viewsets.ViewSet):
             serializer = MovieSerializer(movies, many=True)
             return Response(serializer.data)
             
-        
+        #if the table in postgres contains data, the following block pulls the data, serializes it and returns a template response with the data
         else:
             movies = Movies.objects.all()
             serializer = MovieSerializer(movies, many=True)
