@@ -18,7 +18,7 @@ class MovieViewSet(viewsets.ViewSet):
 
         if check_empty:
 
-            data = pd.read_csv('D:\\Movies\\imdb\\imdb\\static\\IMDb_movies.csv')  
+            data = pd.read_csv('imdb/static/IMDb_movies.csv')  
             movies = data.to_dict('records')
             serializer = MovieSerializer(data=movies, many=True)
             if serializer.is_valid():
