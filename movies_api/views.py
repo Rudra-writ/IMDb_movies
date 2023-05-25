@@ -17,29 +17,39 @@ class MovieViewSet(viewsets.ViewSet):
 
         #if no data exists in the data base, reads the csv file into a data frame, serializes it, saves the data into the database, returns the template response
         if check_empty:
-            data = pd.read_csv('imdb/static/IMDb_movies.csv')  
-            movies = data.to_dict('records')
-            serializer = MovieSerializer(data=movies, many=True)
-            if serializer.is_valid():
-                serializer.save()
-                rendered_template = TemplateResponse(request, 'index.html', {'movies': serializer.data})
-                return rendered_template
-               
+            try:
+                data = pd.read_csv('imdb/static/IMDb_movies.csv')  
+                movies = data.to_dict('records')
+                serializer = MovieSerializer(data=movies, many=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    rendered_template = TemplateResponse(request, 'index.html', {'movies': serializer.data})
+                    return rendered_template
+            except:
+                return Response({'message': 'Something went wrong!! Please check that the correct CSV file is used.'})
+            
         # if a query parameter is passed the following block gets triggered
         elif genre != None or lang != None:
-            if genre != None:
-                movies = Movies.objects.filter(genre__icontains=genre.lower().capitalize())
-            if lang != None:
-                movies = Movies.objects.filter(language__icontains=lang.lower().capitalize())
-            serializer = MovieSerializer(movies, many=True)
-            return Response(serializer.data)
+            try:
+                if genre != None:
+                    movies = Movies.objects.filter(genre__icontains=genre.lower().capitalize())
+                if lang != None:
+                    movies = Movies.objects.filter(language__icontains=lang.lower().capitalize())
+                serializer = MovieSerializer(movies, many=True)
+                return Response( { 'data' : serializer.data})
+            except:
+                return Response({'message': 'Something went wrong while querying.'})
+
             
         #if the table in postgres contains data, the following block pulls the data, serializes it and returns a template response with the data
         else:
-            movies = Movies.objects.all()
-            serializer = MovieSerializer(movies, many=True)
-            rendered_template = TemplateResponse(request, 'index.html', {'movies': serializer.data})
-            return rendered_template
+            try:
+                movies = Movies.objects.all()
+                serializer = MovieSerializer(movies, many=True)
+                rendered_template = TemplateResponse(request, 'index.html', {'movies': serializer.data})
+                return rendered_template
+            except:
+                return Response({'message': 'Something went wrong while returning the template response.'})
             
 
 
